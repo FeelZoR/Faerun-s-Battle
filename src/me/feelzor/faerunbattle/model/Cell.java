@@ -4,9 +4,7 @@ import me.feelzor.faerunbattle.Color;
 import me.feelzor.faerunbattle.DivineBlow;
 import me.feelzor.faerunbattle.warriors.Warrior;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.logging.Logger;
 
 public class Cell {
@@ -126,7 +124,9 @@ public class Cell {
      * Start fights on the cell
      */
     public void startFight() {
-        for (Warrior w : this.getUnits()) {
+        List<Warrior> fightOrder = new ArrayList<>(this.getUnits());
+        Collections.shuffle(fightOrder);
+        for (Warrior w : fightOrder) {
             if (w.isAlive()) {
                 try { w.startTurn(this.getUnits()); }
                 catch (DivineBlow e) {
@@ -138,5 +138,20 @@ public class Cell {
         }
 
         getUnits().removeIf(w -> (!w.isAlive()));
+    }
+
+    /**
+     * Sort units
+     */
+    public void sortUnits() {
+        getUnits().sort((w1, w2) -> {
+            if (w1.getColor() == Color.BLUE && w2.getColor() == Color.RED) { return -1; } // Blue before red
+            else if (w1.getColor() == w2.getColor()) { // Same color
+                if (w1.getHealthPoints() < w2.getHealthPoints()) { return -1; } // Less hp comes first
+                else if (w1.getHealthPoints() == w2.getHealthPoints()) { return 0; } // Same color & same hp -> equal
+            }
+
+            return 1;
+        });
     }
 }

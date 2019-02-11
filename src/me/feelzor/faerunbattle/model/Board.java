@@ -158,7 +158,9 @@ public class Board {
     public void showBoard() {
         for (int i = 0; i < this.getNbCells(); i++) {
             System.out.println("------- Cell " + (i+1) + " -------");
-            for (Warrior w : Objects.requireNonNull(getCellAt(i)).getUnits()) {
+            Cell c = Objects.requireNonNull(getCellAt(i));
+            c.sortUnits();
+            for (Warrior w : c.getUnits()) {
                 System.out.println(w);
             }
 
