@@ -1,13 +1,13 @@
 package me.feelzor.faerunbattle;
 
-public enum Couleur {
-    BLEU("Bleu"),
-    ROUGE("Rouge"),
-    AUCUN("Neutre");
+public enum Color {
+    BLUE("Blue"),
+    RED("Red"),
+    NONE("Neutral");
 
     String name;
 
-    Couleur(String name) {
+    Color(String name) {
         this.name = name;
     }
 
