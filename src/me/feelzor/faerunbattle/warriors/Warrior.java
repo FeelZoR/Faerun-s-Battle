@@ -292,6 +292,6 @@ public abstract class Warrior {
 
     @Override
     public String toString() {
-        return this.getName() + ' ' + this.getColor() + " [" + this.getHealthPoints() + "]";
+        return this.getColor().toString() + ' ' + this.getName() + " [" + this.getHealthPoints() + "]";
     }
 }
