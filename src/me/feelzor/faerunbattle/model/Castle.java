@@ -8,8 +8,10 @@ import me.feelzor.faerunbattle.warriors.*;
 import java.util.ArrayDeque;
 import java.util.HashMap;
 import java.util.Queue;
+import java.util.logging.Logger;
 
 public class Castle {
+    private final static Logger LOGGER = Logger.getLogger(Castle.class.getName());
     private HashMap<String, Skill> skills;
     private Queue<Warrior> warriorsQueue;
     private Color color;
@@ -42,7 +44,8 @@ public class Castle {
 
     private void setColor(Color color) {
         if (color == Color.NONE) {
-            throw new IllegalArgumentException("The castle must have a color.");
+            LOGGER.warning("Illegal try to set castle color to NONE.");
+            return;
         }
 
         this.color = color;
@@ -120,7 +123,8 @@ public class Castle {
      */
     public Skill getSkill(String name) {
         if (!getSkills().containsKey(name.toLowerCase())) {
-            throw new IllegalArgumentException("Skill not found.");
+            LOGGER.warning("Illegal try to get non-existent skill.");
+            return null;
         }
 
         return getSkills().get(name.toLowerCase());
@@ -131,10 +135,9 @@ public class Castle {
      * @param amount The number of resources to consume, must be less than the number of resources of castle
      */
     public void consumeResources(int amount) {
-        if (amount > getResources()) {
-            throw new IllegalArgumentException("Not enough resources.");
-        } else if (amount < 0) {
-            throw new IllegalArgumentException("Cannot consume a negative number of resources.");
+        if (amount < 0 || amount > getResources()) {
+            LOGGER.warning("Illegal try to consume " + amount + " resources. Available resources : " + getResources());
+            return;
         }
 
         setResources(getResources() - amount);

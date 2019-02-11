@@ -2,12 +2,15 @@ package me.feelzor.faerunbattle.warriors;
 
 import me.feelzor.faerunbattle.Color;
 import me.feelzor.faerunbattle.DivineBlow;
+import me.feelzor.faerunbattle.model.Castle;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.logging.Logger;
 
 public abstract class Warrior {
+    private final static Logger LOGGER = Logger.getLogger(Warrior.class.getName());
     private int healthPoints;
     private Color col;
     private int nbMovements;
@@ -31,7 +34,8 @@ public abstract class Warrior {
     public Warrior(Color col, int bonusStrength) {
         this(col);
         if (bonusStrength < 0) {
-            throw new IllegalArgumentException("Bonuses cannot be negative.");
+            LOGGER.warning("Illegal try to set a negative strength bonus.");
+            return;
         }
 
         setStrength(getStrength() + bonusStrength);
@@ -97,7 +101,10 @@ public abstract class Warrior {
      * @param col The new color (either RED or BLUE)
      */
     public void setColor(Color col) {
-        if (col == Color.NONE) throw new IllegalArgumentException("A troops color cannot be NONE");
+        if (col == Color.NONE) {
+            LOGGER.warning("Illegal try to set color NONE");
+            return;
+        }
 
         this.col = col;
     }
@@ -142,7 +149,8 @@ public abstract class Warrior {
      */
     public void increaseProvocation(int amount) {
         if (amount < 0) {
-            throw new IllegalArgumentException("The amount cannot be negative.");
+            LOGGER.warning("Illegal try to increase provocation with a negative amount.");
+            return;
         }
 
         setProvocation(getProvocation() + amount);
@@ -167,7 +175,8 @@ public abstract class Warrior {
      */
     public void move() {
         if (!canMove()) {
-            throw new IllegalStateException("All the movements have been done this turn.");
+            LOGGER.warning("Illegal try to move a warrior unable to move.");
+            return;
         }
 
         setNbMovements(getNbMovements() + 1);
@@ -208,7 +217,10 @@ public abstract class Warrior {
      * Attack another warrior
      */
     public void attack(Warrior warrior) {
-        if (!this.isAlive()) { throw new IllegalStateException("Cannot attack when dead !"); }
+        if (!this.isAlive()) {
+            LOGGER.warning("Illegal try to attack another warrior when dead.");
+            return;
+        }
 
         Random rand = new Random();
         int damage = 0;

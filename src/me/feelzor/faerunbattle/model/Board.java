@@ -3,9 +3,13 @@ package me.feelzor.faerunbattle.model;
 import me.feelzor.faerunbattle.Color;
 import me.feelzor.faerunbattle.warriors.Warrior;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.logging.Logger;
 
 public class Board {
+    private final static Logger LOGGER = Logger.getLogger(Board.class.getName());
     private Cell[] cells;
 
     public Board(int nbCells) {
@@ -27,11 +31,12 @@ public class Board {
 
     /**
      * @param index The number of the cell to get
-     * @return The cell at position index
+     * @return The cell at position index, or null if it doesn't exist
      */
     private Cell getCellAt(int index) {
         if (index < 0 || index >= getNbCells()) {
-            throw new IllegalArgumentException("There is no cell with index " + index + ".");
+            LOGGER.warning("Illegal try to access non-existent cell at index " + index);
+            return null;
         }
 
         return getCells()[index];
@@ -42,7 +47,8 @@ public class Board {
      * @return The troops placed on a cell
      */
     public List<Warrior> getUnitsOnCell(int index) {
-        return getCellAt(index).getUnits();
+        Cell c = getCellAt(index);
+        return (c != null) ? c.getUnits() : new ArrayList<>();
     }
 
     /**
@@ -50,7 +56,8 @@ public class Board {
      * @return The cell's color
      */
     public Color getCellColor(int index) {
-        return getCellAt(index).getColor();
+        Cell c = getCellAt(index);
+        return (c != null) ? c.getColor() : Color.NONE;
     }
 
     /**
@@ -66,9 +73,9 @@ public class Board {
      */
     public void addUnit(Warrior unit) {
         if (unit.getColor() == Color.BLUE) {
-            getCellAt(0).addUnit(unit);
+            Objects.requireNonNull(getCellAt(0)).addUnit(unit);
         } else { // Color rouge
-            getCellAt(getNbCells() - 1).addUnit(unit);
+            Objects.requireNonNull(getCellAt(getNbCells() - 1)).addUnit(unit);
         }
     }
 
@@ -90,11 +97,13 @@ public class Board {
         boolean result = true;
         int i = 0;
         while (i < getNbCells() && result) {
-            if ((col = getCellAt(i).getColor()) == Color.NONE || // If there are fights on this cell, or it is empty
+            Cell c = getCellAt(i);
+            if (c == null) { continue; }
+            if ((col = c.getColor()) == Color.NONE || // If there are fights on this cell, or it is empty
                     col == Color.BLUE && i == getNbCells() - 1 || // Or if the units have reached the end of the board
                     col == Color.RED && i == 0) { i++; continue; }
 
-            List<Warrior> warriors = getCellAt(i).getUnits();
+            List<Warrior> warriors = c.getUnits();
             int j = 0;
             while (j < warriors.size() && result) {
                 if (warriors.get(j).canMove()) {
@@ -114,12 +123,12 @@ public class Board {
     public void startFights() {
         int i = 0;
         Cell cell;
-        while (i < getNbCells() && ((cell = getCellAt(i)).getColor() != Color.NONE || cell.getNbUnits() == 0)) {
+        while (i < getNbCells() && ((Objects.requireNonNull(cell = getCellAt(i))).getColor() != Color.NONE || cell.getNbUnits() == 0)) {
             i++;
         }
 
         if (i < getNbCells()) {
-            Cell c = getCellAt(i);
+            Cell c = Objects.requireNonNull(getCellAt(i));
             if (c.getNbUnits() > 0 && c.getColor() == Color.NONE) {
                 c.startFight();
                 this.moveUnits();
@@ -134,10 +143,10 @@ public class Board {
     private void moveColor(Color col, int direction) {
         int i = (direction == 1) ? 0 : getNbCells() - 1;
         Cell cell;
-        while (i >= 0 && i < getNbCells() && ((cell = getCellAt(i)).getColor() == col || cell.getColor() == Color.NONE)) {
+        while (i >= 0 && i < getNbCells() && ((Objects.requireNonNull(cell = getCellAt(i))).getColor() == col || cell.getColor() == Color.NONE)) {
             if (cell.getColor() != Color.NONE && (direction == 1 && i != getNbCells() - 1 || direction == -1 && i != 0)) { // If it's not the last cell
                 List<Warrior> movements = cell.moveUnits();
-                getCellAt(i+direction).addUnits(movements);
+                Objects.requireNonNull(getCellAt(i + direction)).addUnits(movements);
             }
             i += direction;
         }
@@ -149,7 +158,7 @@ public class Board {
     public void showBoard() {
         for (int i = 0; i < this.getNbCells(); i++) {
             System.out.println("------- Cell " + (i+1) + " -------");
-            for (Warrior w : getCellAt(i).getUnits()) {
+            for (Warrior w : Objects.requireNonNull(getCellAt(i)).getUnits()) {
                 System.out.println(w);
             }
 

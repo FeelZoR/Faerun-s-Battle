@@ -147,7 +147,7 @@ public class GameEngine {
                         isSkillValid = false;
                 }
             } catch (IllegalStateException e) {
-                System.out.print(e.getMessage());
+                System.out.println(e.getMessage());
             }
 
             if (action.toLowerCase().startsWith("info ")) { Command.showSkill(action.substring(5), player); }
