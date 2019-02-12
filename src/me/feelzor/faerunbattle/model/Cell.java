@@ -9,10 +9,8 @@ import me.feelzor.faerunbattle.warriors.Warrior;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
-import java.util.logging.Logger;
 
 public class Cell {
-    private final static Logger LOGGER = Logger.getLogger(Cell.class.getName());
     private final List<Warrior> units;
 
     public Cell() {
@@ -27,8 +25,8 @@ public class Cell {
     public Color getColor() {
         Color col = Color.NONE;
         int i = 0;
-        while (i < getNbUnits() && (col == Objects.requireNonNull(getUnitAt(i)).getColor() || col == Color.NONE)) {
-            col = Objects.requireNonNull(getUnitAt(i)).getColor();
+        while (i < getNbUnits() && (col == getUnitAt(i).getColor() || col == Color.NONE)) {
+            col = getUnitAt(i).getColor();
             i++;
         }
 
@@ -49,8 +47,7 @@ public class Cell {
      */
     private Warrior getUnitAt(int index) {
         if (index < 0 || index >= getNbUnits()) {
-            LOGGER.warning("Illegal try to get non-existent troop at index " + index);
-            return null;
+            throw new IllegalArgumentException("Illegal try to get non-existent troop at index " + index);
         }
 
         return getUnits().get(index);
@@ -111,8 +108,7 @@ public class Cell {
     @NotNull
     public List<Warrior> moveUnits() {
         if (getColor() == Color.NONE) {
-            LOGGER.warning("Illegal try to move troops during a fight.");
-            return new ArrayList<>();
+            throw new IllegalStateException("Illegal try to move troops during a fight.");
         }
 
         List<Warrior> result = new ArrayList<>();

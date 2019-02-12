@@ -10,7 +10,6 @@ import me.feelzor.faerunbattle.warriors.WarriorType;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
-import java.util.Objects;
 
 public class PrintUtils {
 
@@ -26,7 +25,7 @@ public class PrintUtils {
     public static void printBoard(@NotNull Board board) {
         for (int i = 0; i < board.getNbCells(); i++) {
             System.out.println("------- Cell " + (i+1) + " -------");
-            Cell c = Objects.requireNonNull(board.getCellAt(i));
+            Cell c = board.getCellAt(i);
             c.sortUnits();
             for (Warrior w : c.getUnits()) {
                 System.out.println(w);

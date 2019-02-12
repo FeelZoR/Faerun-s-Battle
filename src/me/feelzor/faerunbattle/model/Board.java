@@ -3,15 +3,10 @@ package me.feelzor.faerunbattle.model;
 import me.feelzor.faerunbattle.Color;
 import me.feelzor.faerunbattle.warriors.Warrior;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
-import java.util.logging.Logger;
 
 public class Board {
-    private final static Logger LOGGER = Logger.getLogger(Board.class.getName());
     private final Cell[] cells;
 
     public Board(int nbCells) {
@@ -33,13 +28,12 @@ public class Board {
 
     /**
      * @param index The number of the cell to get
-     * @return The cell at position index, or null if it doesn't exist
+     * @return The cell at position index
      */
-    @Nullable
+    @NotNull
     public Cell getCellAt(int index) {
         if (index < 0 || index >= getNbCells()) {
-            LOGGER.warning("Illegal try to access non-existent cell at index " + index);
-            return null;
+            throw new IllegalArgumentException("Illegal try to access non-existent cell at index " + index);
         }
 
         return getCells()[index];
@@ -51,8 +45,7 @@ public class Board {
      */
     @NotNull
     public List<Warrior> getUnitsOnCell(int index) {
-        Cell c = getCellAt(index);
-        return (c != null) ? c.getUnits() : new ArrayList<>();
+        return getCellAt(index).getUnits();
     }
 
     /**
@@ -61,8 +54,7 @@ public class Board {
      */
     @NotNull
     public Color getCellColor(int index) {
-        Cell c = getCellAt(index);
-        return (c != null) ? c.getColor() : Color.NONE;
+        return getCellAt(index).getColor();
     }
 
     /**
@@ -78,9 +70,9 @@ public class Board {
      */
     public void addUnit(@NotNull Warrior unit) {
         if (unit.getColor() == Color.BLUE) {
-            Objects.requireNonNull(getCellAt(0)).addUnit(unit);
+            getCellAt(0).addUnit(unit);
         } else { // Color rouge
-            Objects.requireNonNull(getCellAt(getNbCells() - 1)).addUnit(unit);
+            getCellAt(getNbCells() - 1).addUnit(unit);
         }
     }
 
@@ -103,7 +95,6 @@ public class Board {
         int i = 0;
         while (i < getNbCells() && result) {
             Cell c = getCellAt(i);
-            if (c == null) { continue; }
             if ((col = c.getColor()) == Color.NONE || // If there are fights on this cell, or it is empty
                     col == Color.BLUE && i == getNbCells() - 1 || // Or if the units have reached the end of the board
                     col == Color.RED && i == 0) { i++; continue; }
@@ -128,12 +119,12 @@ public class Board {
     public void startFights() {
         int i = 0;
         Cell cell;
-        while (i < getNbCells() && ((Objects.requireNonNull(cell = getCellAt(i))).getColor() != Color.NONE || cell.getNbUnits() == 0)) {
+        while (i < getNbCells() && ((cell = getCellAt(i)).getColor() != Color.NONE || cell.getNbUnits() == 0)) {
             i++;
         }
 
         if (i < getNbCells()) {
-            Cell c = Objects.requireNonNull(getCellAt(i));
+            Cell c = getCellAt(i);
             if (c.getNbUnits() > 0 && c.getColor() == Color.NONE) {
                 c.startFight();
                 this.moveUnits();
@@ -148,10 +139,10 @@ public class Board {
     private void moveColor(Color col, int direction) {
         int i = (direction == 1) ? 0 : getNbCells() - 1;
         Cell cell;
-        while (i >= 0 && i < getNbCells() && ((Objects.requireNonNull(cell = getCellAt(i))).getColor() == col || cell.getColor() == Color.NONE)) {
+        while (i >= 0 && i < getNbCells() && ((cell = getCellAt(i)).getColor() == col || cell.getColor() == Color.NONE)) {
             if (cell.getColor() != Color.NONE && (direction == 1 && i != getNbCells() - 1 || direction == -1 && i != 0)) { // If it's not the last cell
                 List<Warrior> movements = cell.moveUnits();
-                Objects.requireNonNull(getCellAt(i + direction)).addUnits(movements);
+                getCellAt(i + direction).addUnits(movements);
             }
             i += direction;
         }

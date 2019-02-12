@@ -36,11 +36,11 @@ public class Healer extends Warrior {
     @Override
     @Nullable
     public ActionLog startTurn(@NotNull List<Warrior> warriors) {
-        int nb = RandomUtils.generateNumber(100);
+        int nb = RandomUtils.generateNumber(1, 100);
         Warrior target = this.mostInjured(warriors);
-        if (nb >= 40 || target == null) { // Attacks (60%)
+        if (nb <= 60 || target == null) { // Attacks (60%)
             return super.startTurn(warriors);
-        } else if (nb != 1) { // Heals the most injured ally (39%)
+        } else if (nb != 99) { // Heals the most injured ally (39%)
             int healingAmount = 20;
             target.setHealthPoints(target.getHealthPoints() + healingAmount);
             this.increaseProvocation(RandomUtils.generateNumber(10, 40));
@@ -59,7 +59,7 @@ public class Healer extends Warrior {
 
     /**
      * @param warriors The list of warriors on the cell
-     * @return The most injured ally
+     * @return The most injured ally, or null if there are no allies
      */
     private Warrior mostInjured(List<Warrior> warriors) {
         if (warriors.size() == 0) return null;

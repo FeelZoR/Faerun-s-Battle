@@ -6,15 +6,12 @@ import me.feelzor.faerunbattle.warriors.WarriorType;
 import me.feelzor.faerunbattle.skills.*;
 import me.feelzor.faerunbattle.warriors.*;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayDeque;
 import java.util.HashMap;
 import java.util.Queue;
-import java.util.logging.Logger;
 
 public class Castle {
-    private final static Logger LOGGER = Logger.getLogger(Castle.class.getName());
     private final HashMap<String, Skill> skills;
     private final Queue<Warrior> warriorsQueue;
     private final Color color;
@@ -113,11 +110,10 @@ public class Castle {
      * @param name The skill's name
      * @return The skill found
      */
-    @Nullable
+    @NotNull
     public Skill getSkill(@NotNull String name) {
         if (!getSkills().containsKey(name.toLowerCase())) {
-            LOGGER.warning("Illegal try to get non-existent skill.");
-            return null;
+            throw new IllegalArgumentException("Illegal try to get non-existent skill.");
         }
 
         return getSkills().get(name.toLowerCase());
@@ -129,8 +125,7 @@ public class Castle {
      */
     public void consumeResources(int amount) {
         if (amount < 0 || amount > getResources()) {
-            LOGGER.warning("Illegal try to consume " + amount + " resources. Available resources : " + getResources());
-            return;
+            throw new IllegalArgumentException("Illegal try to consume " + amount + " resources. Available resources : " + getResources());
         }
 
         setResources(getResources() - amount);

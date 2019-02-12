@@ -10,10 +10,8 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Logger;
 
 public abstract class Warrior {
-    private final static Logger LOGGER = Logger.getLogger(Warrior.class.getName());
     private Color col;
     private int healthPoints;
     private int nbMovements;
@@ -32,9 +30,9 @@ public abstract class Warrior {
 
     public Warrior(@NotNull Color col, int bonusStrength) {
         this(col);
+
         if (bonusStrength < 0) {
-            LOGGER.warning("Illegal try to set a negative strength bonus.");
-            return;
+            throw new IllegalArgumentException("Illegal try to set negative strength bonus.");
         }
 
         setStrength(this.strength + bonusStrength);
@@ -102,8 +100,7 @@ public abstract class Warrior {
      */
     public void setColor(@NotNull Color col) {
         if (col == Color.NONE) {
-            LOGGER.warning("Illegal try to set color NONE");
-            return;
+            throw new IllegalArgumentException("Illegal try to set color NONE");
         }
 
         this.col = col;
@@ -149,8 +146,7 @@ public abstract class Warrior {
      */
     public void increaseProvocation(int amount) {
         if (amount < 0) {
-            LOGGER.warning("Illegal try to increase provocation with a negative amount.");
-            return;
+            throw new IllegalArgumentException("Illegal try to increase provocation with a negative amount.");
         }
 
         setProvocation(getProvocation() + amount);
@@ -175,8 +171,7 @@ public abstract class Warrior {
      */
     public void move() {
         if (!canMove()) {
-            LOGGER.warning("Illegal try to move a warrior unable to move.");
-            return;
+            throw new IllegalStateException("Illegal try to move a warrior unable to move.");
         }
 
         setNbMovements(getNbMovements() + 1);
