@@ -2,6 +2,9 @@ package me.feelzor.faerunbattle.model;
 
 import me.feelzor.faerunbattle.Color;
 import me.feelzor.faerunbattle.DivineBlow;
+import me.feelzor.faerunbattle.utils.PrintUtils;
+import me.feelzor.faerunbattle.utils.actions.ActionLog;
+import me.feelzor.faerunbattle.utils.actions.DivineBlowLog;
 import me.feelzor.faerunbattle.warriors.Warrior;
 import org.jetbrains.annotations.NotNull;
 
@@ -129,18 +132,21 @@ public class Cell {
      */
     public void startFight() {
         List<Warrior> fightOrder = new ArrayList<>(this.getUnits());
+        List<ActionLog> fightLog = new ArrayList<>();
         Collections.shuffle(fightOrder);
         for (Warrior w : fightOrder) {
             if (w.isAlive()) {
-                try { w.startTurn(this.getUnits()); }
-                catch (DivineBlow e) {
-                    System.out.println("Divine Blow ! Everyone's dead.");
+                try {
+                    fightLog.add(w.startTurn(this.getUnits()));
+                } catch (DivineBlow e) {
+                    fightLog.add(new DivineBlowLog(e.getAttacker()));
                     this.clearUnits();
                     this.addUnit(e.getAttacker());
                 }
             }
         }
 
+        PrintUtils.logFight(fightLog);
         getUnits().removeIf(w -> (!w.isAlive()));
     }
 

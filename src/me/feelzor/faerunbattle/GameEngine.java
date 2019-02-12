@@ -2,28 +2,17 @@ package me.feelzor.faerunbattle;
 
 import me.feelzor.faerunbattle.model.Castle;
 import me.feelzor.faerunbattle.model.Board;
+import me.feelzor.faerunbattle.utils.CommandUtils;
+import me.feelzor.faerunbattle.utils.PrintUtils;
+import me.feelzor.faerunbattle.utils.actions.PromptUtils;
 import me.feelzor.faerunbattle.warriors.Warrior;
 import me.feelzor.faerunbattle.warriors.WarriorType;
 
 import java.util.List;
-import java.util.Scanner;
 
 public class GameEngine {
     public static void main(String[] args) {
-        Scanner in = new Scanner(System.in);
-        Board board;
-
-        while (true) {
-            try {
-                System.out.print("Enter the board's number of cells (5 / 10 / 15) : ");
-                int nbCells = in.nextInt();
-                in.nextLine();
-                board = new Board(nbCells);
-                break;
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
+        Board board = PromptUtils.promptBoardSize();
 
         Castle blue = new Castle(Color.BLUE, board);
         Castle red = new Castle(Color.RED, board);
@@ -31,17 +20,13 @@ public class GameEngine {
         while (board.getCellColor(0) != Color.RED
                 && board.getCellColor(board.getNbCells() - 1) != Color.BLUE) {
             newTurn(board, blue, red);
-            gameTurn(blue, in);
-            gameTurn(red, in);
+            gameTurn(blue);
+            gameTurn(red);
             board.moveUnits();
             board.startFights();
         }
 
-        if (board.getCellColor(0) == Color.RED) {
-            System.out.println("Red wins !");
-        } else {
-            System.out.println("Blue wins !");
-        }
+        PrintUtils.printVictoryMessage(board.getCellColor(0) == Color.RED ? Color.RED : Color.BLUE);
     }
 
     /**
@@ -50,9 +35,8 @@ public class GameEngine {
      * @param red The red team's castle
      */
     private static void newTurn(Board board, Castle blue, Castle red) {
-        System.out.println("-------- New Turn --------");
-
-        board.showBoard();
+        PrintUtils.printNewTurn();
+        PrintUtils.printBoard(board);
         for (int i = 0; i < board.getNbCells(); i++) {
             List<Warrior> units = board.getUnitsOnCell(i);
             for (Warrior w : units) {
@@ -67,16 +51,12 @@ public class GameEngine {
     /**
      * Start a new turn for a castle
      */
-    private static void gameTurn(Castle player, Scanner in) {
-        System.out.println(player.getColor() + " team's turn.");
-        System.out.println("You have " + player.getResources() + " resources.");
+    private static void gameTurn(Castle player) {
+        PrintUtils.printCastleTurn(player);
 
         String action;
         do {
-            System.out.println();
-            System.out.println("Action (start with \"info\" to get more information)");
-            System.out.println("Dwarf (d), Elf (e), Dwarf Leader (dl), Elf Leader (el), Paladin (p), Recruiter (r), Healer (h), Skill (s), Empty (0), Quit (q)");
-            action = in.nextLine();
+            action = PromptUtils.getUserAction();
 
             switch (action.toLowerCase()) {
                 case "elf": case "e":
@@ -101,14 +81,14 @@ public class GameEngine {
                     player.addTraining(WarriorType.HEALER);
                     break;
                 case "skill": case "skills": case "s":
-                    skillsMenu(player, in);
+                    skillsMenu(player);
                     break;
                 case "empty": case "0":
                     player.cancelTrainings();
                     break;
             }
 
-            if (action.toLowerCase().startsWith("info ")) { Command.showInformation(action.substring(5)); }
+            if (action.toLowerCase().startsWith("info ")) { CommandUtils.showInformation(action.substring(5)); }
         } while (!action.equalsIgnoreCase("quit") && !action.equalsIgnoreCase("q"));
 
         player.trainUnits();
@@ -117,15 +97,12 @@ public class GameEngine {
     /**
      * Open the skill menu
      */
-    private static void skillsMenu(Castle player, Scanner in) {
+    private static void skillsMenu(Castle player) {
         boolean isSkillValid;
         String action;
         do {
             isSkillValid = true;
-            System.out.println();
-            System.out.println("Skill to use (start with \"info\" to get more information)");
-            System.out.println("Bargaining (b), Motivating Call (mc), Negotiations (n), Intensive Training (it), Quit (q)");
-            action = in.nextLine();
+            action = PromptUtils.getSkillAction();
 
             try {
                 switch (action.toLowerCase()) {
@@ -147,10 +124,10 @@ public class GameEngine {
                         isSkillValid = false;
                 }
             } catch (IllegalStateException e) {
-                System.out.println(e.getMessage());
+                PrintUtils.printSkillError(e.getMessage());
             }
 
-            if (action.toLowerCase().startsWith("info ")) { Command.showSkill(action.substring(5), player); }
+            if (action.toLowerCase().startsWith("info ")) { CommandUtils.showSkill(action.substring(5), player); }
         } while (!isSkillValid);
     }
 
@@ -159,9 +136,9 @@ public class GameEngine {
      */
     private static void useSkill(Castle player, String skillName) {
         if (player.getSkill(skillName).activate()) {
-            System.out.println(skillName + " activated ! You have " + player.getResources() + " resources left.");
+            PrintUtils.printSkillActivation(skillName, player.getResources());
         } else {
-            System.out.print("Not enough resources to use this skill !");
+            PrintUtils.printNotEnoughResources();
         }
     }
 }

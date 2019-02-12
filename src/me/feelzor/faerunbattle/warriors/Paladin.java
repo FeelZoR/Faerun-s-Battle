@@ -1,6 +1,8 @@
 package me.feelzor.faerunbattle.warriors;
 
 import me.feelzor.faerunbattle.Color;
+import me.feelzor.faerunbattle.utils.actions.ActionLog;
+import me.feelzor.faerunbattle.utils.actions.ProvocationLog;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -25,13 +27,13 @@ public class Paladin extends Warrior {
     }
 
     @Override
-    public void startTurn(@NotNull List<Warrior> warriors) {
+    public ActionLog startTurn(@NotNull List<Warrior> warriors) {
         int provocAvg = provocationAverage(warriors);
         if (this.getProvocation() < provocAvg) {
             this.increaseProvocation((provocAvg - this.getProvocation()) * 2);
-            System.out.println(this + " provoke its enemies !");
+            return new ProvocationLog(this);
         } else {
-            super.startTurn(warriors);
+            return super.startTurn(warriors);
         }
     }
 

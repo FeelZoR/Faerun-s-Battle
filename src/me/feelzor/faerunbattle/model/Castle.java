@@ -1,6 +1,7 @@
 package me.feelzor.faerunbattle.model;
 
 import me.feelzor.faerunbattle.Color;
+import me.feelzor.faerunbattle.utils.PrintUtils;
 import me.feelzor.faerunbattle.warriors.WarriorType;
 import me.feelzor.faerunbattle.skills.*;
 import me.feelzor.faerunbattle.warriors.*;
@@ -182,7 +183,7 @@ public class Castle {
                 break;
         }
 
-        System.out.println("A " + type + " has been added to the training queue.");
+        PrintUtils.printTroopAdded(type);
     }
 
     private void addUnit(Warrior warrior) {
@@ -194,7 +195,7 @@ public class Castle {
      */
     public void cancelTrainings() {
         getWarriorsQueue().clear();
-        System.out.println("Training queue has been emptied.");
+        PrintUtils.printTrainingQueueEmptied();
     }
 
     /**

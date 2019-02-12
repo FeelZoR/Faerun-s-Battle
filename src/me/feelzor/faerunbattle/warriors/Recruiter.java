@@ -1,6 +1,9 @@
 package me.feelzor.faerunbattle.warriors;
 
 import me.feelzor.faerunbattle.Color;
+import me.feelzor.faerunbattle.utils.RandomUtils;
+import me.feelzor.faerunbattle.utils.actions.ActionLog;
+import me.feelzor.faerunbattle.utils.actions.RecruitmentLog;
 import org.jetbrains.annotations.NotNull;
 
 public class Recruiter extends Warrior {
@@ -19,13 +22,14 @@ public class Recruiter extends Warrior {
     }
 
     @Override
-    public void attack(@NotNull Warrior warrior) {
-        if (Math.random() * 100 <= 15) {
-            System.out.println(this + " recruits " + warrior + " !");
+    @NotNull
+    public ActionLog attack(@NotNull Warrior warrior) {
+        if (RandomUtils.generateNumber(100) <= 15) {
             warrior.setColor(this.getColor());
-            this.increaseProvocation((int) (Math.random() * 20) + 30);
+            this.increaseProvocation(RandomUtils.generateNumber(30, 50));
+            return new RecruitmentLog(this, warrior);
         } else {
-            super.attack(warrior);
+            return super.attack(warrior);
         }
     }
 }

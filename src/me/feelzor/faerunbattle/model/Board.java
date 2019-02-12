@@ -3,6 +3,7 @@ package me.feelzor.faerunbattle.model;
 import me.feelzor.faerunbattle.Color;
 import me.feelzor.faerunbattle.warriors.Warrior;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,7 +35,8 @@ public class Board {
      * @param index The number of the cell to get
      * @return The cell at position index, or null if it doesn't exist
      */
-    private Cell getCellAt(int index) {
+    @Nullable
+    public Cell getCellAt(int index) {
         if (index < 0 || index >= getNbCells()) {
             LOGGER.warning("Illegal try to access non-existent cell at index " + index);
             return null;
@@ -152,23 +154,6 @@ public class Board {
                 Objects.requireNonNull(getCellAt(i + direction)).addUnits(movements);
             }
             i += direction;
-        }
-    }
-
-    /**
-     * Show the board
-     */
-    public void showBoard() {
-        for (int i = 0; i < this.getNbCells(); i++) {
-            System.out.println("------- Cell " + (i+1) + " -------");
-            Cell c = Objects.requireNonNull(getCellAt(i));
-            c.sortUnits();
-            for (Warrior w : c.getUnits()) {
-                System.out.println(w);
-            }
-
-            if (i < 10) { System.out.println("----------------------"); }
-            else { System.out.println("-----------------------"); }
         }
     }
 }

@@ -1,7 +1,12 @@
 package me.feelzor.faerunbattle.warriors;
 
 import me.feelzor.faerunbattle.Color;
+import me.feelzor.faerunbattle.utils.RandomUtils;
+import me.feelzor.faerunbattle.utils.actions.ActionLog;
+import me.feelzor.faerunbattle.utils.actions.HealingLog;
+import me.feelzor.faerunbattle.utils.actions.TeamHealingLog;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,23 +37,26 @@ public class Healer extends Warrior {
     }
 
     @Override
-    public void startTurn(@NotNull List<Warrior> warriors) {
-        int nb = (int) (Math.random() * 100);
+    @Nullable
+    public ActionLog startTurn(@NotNull List<Warrior> warriors) {
+        int nb = RandomUtils.generateNumber(100);
         Warrior target = this.mostInjured(warriors);
         if (nb >= 40 || target == null) { // Attacks (60%)
-            super.startTurn(warriors);
+            return super.startTurn(warriors);
         } else if (nb != 1) { // Heals the most injured ally (39%)
-            target.setHealthPoints(target.getHealthPoints() + 20);
-            this.increaseProvocation((int) (Math.random() * 30) + 10);
-            System.out.println(this + " nursed " + target);
+            int healingAmount = 20;
+            target.setHealthPoints(target.getHealthPoints() + healingAmount);
+            this.increaseProvocation(RandomUtils.generateNumber(10, 40));
+            return new HealingLog(this, target, healingAmount);
         } else { // Heals all allies (1%)
+            int healingAmount = 10;
             for (Warrior w : warriors) {
                 if (w.getColor() == this.getColor()) {
-                    w.setHealthPoints(w.getHealthPoints() + 10);
-                    this.increaseProvocation((int) (Math.random() * 20) + 40);
-                    System.out.println(this + " nursed all his allied !");
+                    w.setHealthPoints(w.getHealthPoints() + healingAmount);
+                    this.increaseProvocation(RandomUtils.generateNumber(40, 60));
                 }
             }
+            return new TeamHealingLog(this, healingAmount);
         }
     }
 

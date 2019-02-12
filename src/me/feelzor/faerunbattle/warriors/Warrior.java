@@ -2,11 +2,14 @@ package me.feelzor.faerunbattle.warriors;
 
 import me.feelzor.faerunbattle.Color;
 import me.feelzor.faerunbattle.DivineBlow;
+import me.feelzor.faerunbattle.utils.RandomUtils;
+import me.feelzor.faerunbattle.utils.actions.ActionLog;
+import me.feelzor.faerunbattle.utils.actions.AttackLog;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 import java.util.logging.Logger;
 
 public abstract class Warrior {
@@ -38,7 +41,7 @@ public abstract class Warrior {
             return;
         }
 
-        setStrength(getStrength() + bonusStrength);
+        setStrength(this.strength + bonusStrength);
     }
 
     /**
@@ -217,35 +220,35 @@ public abstract class Warrior {
     /**
      * Attack another warrior
      */
-    public void attack(@NotNull Warrior warrior) {
+    @NotNull
+    public ActionLog attack(@NotNull Warrior warrior) {
         if (!this.isAlive()) {
-            LOGGER.warning("Illegal try to attack another warrior when dead.");
-            return;
+            throw new IllegalStateException("Illegal try to attack another warrior when dead.");
         }
 
-        Random rand = new Random();
-        int damage = 0;
-        for (int i = 0; i < this.getStrength(); i++) {
-            damage += rand.nextInt(3) + 1; // generate a number between 1 and 3
-        }
+        int damage = RandomUtils.throwDice(this.getStrength(), 1, 3);
 
         if (this.getStrength() * 3 * 0.95 <= damage && damage != 0) { throw new DivineBlow(this); }
+        int healthBeforeBlow = warrior.healthPoints;
         warrior.damage(damage);
         this.increaseProvocation(damage);
-        System.out.println(this + " attacks " + warrior);
+
+        return new AttackLog(this, warrior, damage, healthBeforeBlow - warrior.getHealthPoints(), warrior.getHealthPoints());
     }
 
     /**
      * Start a new turn
      * @param warriors The warrior's list
      */
-    public void startTurn(@NotNull List<Warrior> warriors) {
+    @Nullable
+    public ActionLog startTurn(@NotNull List<Warrior> warriors) {
         Color enemyColor = (this.getColor() == Color.BLUE) ? Color.RED : Color.BLUE;
         Warrior target = firstAlive(warriors, enemyColor);
 
-        if (target != null) {
-            this.attack(target);
+        if (target == null) {
+            return null;
         }
+        return this.attack(target);
     }
 
     /**
@@ -273,7 +276,7 @@ public abstract class Warrior {
         do {
             i++;
             currentProb += targets.get(i).getProvocation();
-        } while (i < targets.size() && Math.random() * maxProb > currentProb);
+        } while (i < targets.size() && RandomUtils.generateNumber(maxProb) > currentProb);
 
         return targets.get(i);
     }
@@ -281,13 +284,15 @@ public abstract class Warrior {
     /**
      * @return The warrior's name depending on its class
      */
-    private String getName() {
+    @NotNull
+    public String getName() {
         String name = this.getClass().getSimpleName();
         StringBuilder builder = new StringBuilder();
         for (int i = 0; i < name.length(); i++) {
             if (i != 0 && Character.isUpperCase(name.charAt(i))) { builder.append(' '); }
             builder.append(name.charAt(i));
         }
+
         return builder.toString();
     }
 
