@@ -4,9 +4,7 @@ import me.feelzor.faerunbattle.Color;
 import org.jetbrains.annotations.NotNull;
 
 public class ElfLeader extends Elf {
-    public ElfLeader() {
-        super();
-    }
+    public static final int COST = 3;
 
     public ElfLeader(@NotNull Color col) {
         super(col);
@@ -23,6 +21,6 @@ public class ElfLeader extends Elf {
 
     @Override
     public int getCost() {
-        return 3;
+        return COST;
     }
 }

@@ -21,17 +21,13 @@ public abstract class Warrior {
     private int provocation;
     private int strength;
 
-    public Warrior() {
-        this(Color.NONE);
-    }
-
     public Warrior(@NotNull Color col) {
         this.setHealthPoints(100);
         reinitializeMovements();
         setProvocation(1);
         setStrength(10);
 
-        if (col != Color.NONE) { this.setColor(col); }
+        this.setColor(col);
     }
 
     public Warrior(@NotNull Color col, int bonusStrength) {

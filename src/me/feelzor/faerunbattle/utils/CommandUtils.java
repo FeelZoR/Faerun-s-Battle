@@ -11,26 +11,28 @@ public class CommandUtils {
     public static void showInformation(@NotNull String request) {
         switch (request.toLowerCase()) {
             case "dwarf": case "d":
-                showWarrior("Dwarf");
+                showWarrior("Dwarf", Dwarf.COST);
                 break;
             case "elf": case "e":
-                showWarrior("Elf");
+                showWarrior("Elf", Elf.COST);
                 break;
             case "dwarf leader": case "dl":
-                showWarrior("Chef Dwarf");
+                showWarrior("Dwarf Leader", DwarfLeader.COST);
                 break;
             case "elf leader": case "el":
-                showWarrior("Chef Elf");
+                showWarrior("Elf Leader", ElfLeader.COST);
                 break;
             case "paladin": case "p":
                 showWarrior("Paladin", "\nIt will provoke its enemies if its provocation level is below the average." +
-                        "\nIt also has more health and defense than a regular warrior.");
+                        "\nIt also has more health and defense than a regular warrior.", Paladin.COST);
                 break;
             case "recruiter": case "r":
-                showWarrior("Recruiter", "\nIt has 15% chances to change its target's color into yours for next turn.");
+                showWarrior("Recruiter", "\nIt has 15% chances to change its target's color into yours for next turn.",
+                        Recruiter.COST);
                 break;
             case "healer": case "h":
-                showWarrior("Healer", "\nIt has 40% chances to heal an ally by 20hp or all its allies by 10hp.");
+                showWarrior("Healer", "\nIt has 40% chances to heal an ally by 20hp or all its allies by 10hp.",
+                        Healer.COST);
                 break;
             case "skill": case "skills": case "s":
                 PrintUtils.printInfo("Skills", "Open the skills menu.", "Variable");
@@ -41,18 +43,13 @@ public class CommandUtils {
         }
     }
 
-    private static void showWarrior(String name) {
-        showWarrior(name, "");
+    private static void showWarrior(String name, int cost) {
+        showWarrior(name, "", cost);
     }
 
-    private static void showWarrior(String name, String desc) {
-        try {
-            Warrior w = (Warrior) Class.forName("me.feelzor.faerunbattle.warriors." + name.replaceAll("\\s", "")).newInstance();
-            desc = "Add a " + name + " to the warriors training queue." + desc;
-            PrintUtils.printInfo(name, desc, Integer.toString(w.getCost()));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+    private static void showWarrior(String name, String desc, int cost) {
+        desc = "Add a " + name + " to the warriors training queue." + desc;
+        PrintUtils.printInfo(name, desc, Integer.toString(cost));
     }
 
     /**

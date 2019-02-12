@@ -4,9 +4,7 @@ import me.feelzor.faerunbattle.Color;
 import org.jetbrains.annotations.NotNull;
 
 public class Dwarf extends Warrior {
-    public Dwarf() {
-        super();
-    }
+    public static final int COST = 2;
 
     public Dwarf(@NotNull Color col) {
         super(col);
@@ -23,6 +21,6 @@ public class Dwarf extends Warrior {
 
     @Override
     public int getCost() {
-        return 2;
+        return COST;
     }
 }

@@ -12,10 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Healer extends Warrior {
-
-    public Healer() {
-        super();
-    }
+    public static final int COST = 5;
 
     public Healer(@NotNull Color col) {
         super(col);
@@ -33,7 +30,7 @@ public class Healer extends Warrior {
 
     @Override
     public int getCost() {
-        return 5;
+        return COST;
     }
 
     @Override

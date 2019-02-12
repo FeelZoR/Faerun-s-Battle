@@ -8,9 +8,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 
 public class Paladin extends Warrior {
-    public Paladin() {
-        super();
-    }
+    public static final int COST = 4;
 
     public Paladin(@NotNull Color col) {
         this(col, 0);
@@ -23,7 +21,7 @@ public class Paladin extends Warrior {
 
     @Override
     public int getCost() {
-        return 4;
+        return COST;
     }
 
     @Override

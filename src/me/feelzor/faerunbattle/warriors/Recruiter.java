@@ -7,9 +7,7 @@ import me.feelzor.faerunbattle.utils.actions.RecruitmentLog;
 import org.jetbrains.annotations.NotNull;
 
 public class Recruiter extends Warrior {
-    public Recruiter() {
-        super();
-    }
+    public static final int COST = 5;
 
     public Recruiter(@NotNull Color col) {
         super(col);
@@ -18,7 +16,7 @@ public class Recruiter extends Warrior {
 
     @Override
     public int getCost() {
-        return 5;
+        return COST;
     }
 
     @Override
