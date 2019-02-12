@@ -1,6 +1,7 @@
 package me.feelzor.faerunbattle.warriors;
 
 import me.feelzor.faerunbattle.Color;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,7 +12,7 @@ public class Healer extends Warrior {
         super();
     }
 
-    public Healer(Color col) {
+    public Healer(@NotNull Color col) {
         super(col);
     }
 
@@ -31,7 +32,7 @@ public class Healer extends Warrior {
     }
 
     @Override
-    public void startTurn(List<Warrior> warriors) {
+    public void startTurn(@NotNull List<Warrior> warriors) {
         int nb = (int) (Math.random() * 100);
         Warrior target = this.mostInjured(warriors);
         if (nb >= 40 || target == null) { // Attacks (60%)

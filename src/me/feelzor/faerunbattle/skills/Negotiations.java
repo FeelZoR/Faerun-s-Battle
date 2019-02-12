@@ -1,11 +1,12 @@
 package me.feelzor.faerunbattle.skills;
 
 import me.feelzor.faerunbattle.model.Castle;
+import org.jetbrains.annotations.NotNull;
 
 public class Negotiations extends Skill {
     private int remainingTurns;
 
-    public Negotiations(Castle player) {
+    public Negotiations(@NotNull Castle player) {
         super(player);
         setRemainingTurns(0);
     }

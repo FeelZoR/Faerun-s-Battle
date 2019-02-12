@@ -1,6 +1,7 @@
 package me.feelzor.faerunbattle.warriors;
 
 import me.feelzor.faerunbattle.Color;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
@@ -9,11 +10,11 @@ public class Paladin extends Warrior {
         super();
     }
 
-    public Paladin(Color col) {
+    public Paladin(@NotNull Color col) {
         this(col, 0);
     }
 
-    public Paladin(Color col, int bonusStrength) {
+    public Paladin(@NotNull Color col, int bonusStrength) {
         super(col, bonusStrength);
         this.setHealthPoints(200);
     }
@@ -24,7 +25,7 @@ public class Paladin extends Warrior {
     }
 
     @Override
-    public void startTurn(List<Warrior> warriors) {
+    public void startTurn(@NotNull List<Warrior> warriors) {
         int provocAvg = provocationAverage(warriors);
         if (this.getProvocation() < provocAvg) {
             this.increaseProvocation((provocAvg - this.getProvocation()) * 2);

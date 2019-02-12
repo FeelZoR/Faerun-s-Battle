@@ -1,24 +1,23 @@
 package me.feelzor.faerunbattle.skills;
 
 import me.feelzor.faerunbattle.model.Castle;
+import org.jetbrains.annotations.NotNull;
 
 public abstract class Skill {
+    private final Castle player;
+
+    public Skill(@NotNull Castle player) {
+        this.player = player;
+    }
+
     /**
      * @return The skill usage cost.
      */
     public abstract int getCost();
-    private Castle player;
 
-    public Skill(Castle player) {
-        setPlayer(player);
-    }
-
-    protected Castle getPlayer() {
+    @NotNull
+    protected final Castle getPlayer() {
         return player;
-    }
-
-    private void setPlayer(Castle player) {
-        this.player = player;
     }
 
     /**

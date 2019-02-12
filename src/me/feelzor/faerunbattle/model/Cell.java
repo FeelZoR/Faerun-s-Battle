@@ -3,13 +3,14 @@ package me.feelzor.faerunbattle.model;
 import me.feelzor.faerunbattle.Color;
 import me.feelzor.faerunbattle.DivineBlow;
 import me.feelzor.faerunbattle.warriors.Warrior;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 import java.util.logging.Logger;
 
 public class Cell {
     private final static Logger LOGGER = Logger.getLogger(Cell.class.getName());
-    private List<Warrior> units;
+    private final List<Warrior> units;
 
     public Cell() {
         this.units = new ArrayList<>();
@@ -19,6 +20,7 @@ public class Cell {
      * Get the color of the cell
      * @return RED if all troops are red, BLUE if all troops are blue and NONE if there is no one or both colors on it
      */
+    @NotNull
     public Color getColor() {
         Color col = Color.NONE;
         int i = 0;
@@ -33,6 +35,7 @@ public class Cell {
     /**
      * @return The list of units on the cell
      */
+    @NotNull
     public List<Warrior> getUnits() {
         return this.units;
     }
@@ -59,14 +62,14 @@ public class Cell {
      * Add a troop on the cell
      * @param unit The unit to add
      */
-    public void addUnit(Warrior unit) {
+    public void addUnit(@NotNull Warrior unit) {
         getUnits().add(unit);
     }
 
     /**
      * Add a list of troops to the cell
      */
-    public void addUnits(List<Warrior> units) {
+    public void addUnits(@NotNull List<Warrior> units) {
         getUnits().addAll(units);
     }
 
@@ -80,7 +83,7 @@ public class Cell {
     /**
      * Remove a troop from the cell
      */
-    public void removeUnit(Warrior unit) {
+    public void removeUnit(@NotNull Warrior unit) {
         getUnits().remove(unit);
     }
 
@@ -94,7 +97,7 @@ public class Cell {
     /**
      * Remove a list of troops from the cell
      */
-    public void removeUnits(List<Warrior> warriors) {
+    public void removeUnits(@NotNull List<Warrior> warriors) {
         getUnits().removeAll(warriors);
     }
 
@@ -102,6 +105,7 @@ public class Cell {
      * Move troops
      * @return The list of removed troops to move somewhere else
      */
+    @NotNull
     public List<Warrior> moveUnits() {
         if (getColor() == Color.NONE) {
             LOGGER.warning("Illegal try to move troops during a fight.");

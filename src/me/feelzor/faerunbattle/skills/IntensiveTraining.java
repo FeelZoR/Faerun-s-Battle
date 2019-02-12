@@ -1,13 +1,14 @@
 package me.feelzor.faerunbattle.skills;
 
 import me.feelzor.faerunbattle.model.Castle;
+import org.jetbrains.annotations.NotNull;
 
 public class IntensiveTraining extends Skill {
 
     private int remainingTurns;
     private int boost;
 
-    public IntensiveTraining(Castle player) {
+    public IntensiveTraining(@NotNull Castle player) {
         super(player);
         setRemainingTurns(0);
         setBoost(0);

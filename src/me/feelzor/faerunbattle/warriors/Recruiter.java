@@ -1,13 +1,14 @@
 package me.feelzor.faerunbattle.warriors;
 
 import me.feelzor.faerunbattle.Color;
+import org.jetbrains.annotations.NotNull;
 
 public class Recruiter extends Warrior {
     public Recruiter() {
         super();
     }
 
-    public Recruiter(Color col) {
+    public Recruiter(@NotNull Color col) {
         super(col);
         this.setHealthPoints(60);
     }
@@ -18,7 +19,7 @@ public class Recruiter extends Warrior {
     }
 
     @Override
-    public void attack(Warrior warrior) {
+    public void attack(@NotNull Warrior warrior) {
         if (Math.random() * 100 <= 15) {
             System.out.println(this + " recruits " + warrior + " !");
             warrior.setColor(this.getColor());

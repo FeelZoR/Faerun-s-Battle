@@ -4,6 +4,8 @@ import me.feelzor.faerunbattle.Color;
 import me.feelzor.faerunbattle.warriors.WarriorType;
 import me.feelzor.faerunbattle.skills.*;
 import me.feelzor.faerunbattle.warriors.*;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayDeque;
 import java.util.HashMap;
@@ -12,19 +14,23 @@ import java.util.logging.Logger;
 
 public class Castle {
     private final static Logger LOGGER = Logger.getLogger(Castle.class.getName());
-    private HashMap<String, Skill> skills;
-    private Queue<Warrior> warriorsQueue;
-    private Color color;
-    private Board board;
+    private final HashMap<String, Skill> skills;
+    private final Queue<Warrior> warriorsQueue;
+    private final Color color;
+    private final Board board;
 
     private int resources;
     private int resourcesOnNewTurn;
 
-    public Castle(Color col, Board board) {
+    public Castle(@NotNull Color col, @NotNull Board board) {
+        if (col == Color.NONE) {
+            throw new IllegalArgumentException("Illegal try to set castle color to NONE.");
+        }
+
         this.warriorsQueue = new ArrayDeque<>();
         this.skills = new HashMap<>();
-        setColor(col);
-        setBoard(board);
+        this.color = col;
+        this.board = board;
         setResources(3);
         setResourcesOnNewTurn(1);
 
@@ -38,17 +44,9 @@ public class Castle {
      * Get the castle's color
      * @return RED ou BLUE
      */
+    @NotNull
     public Color getColor() {
         return color;
-    }
-
-    private void setColor(Color color) {
-        if (color == Color.NONE) {
-            LOGGER.warning("Illegal try to set castle color to NONE.");
-            return;
-        }
-
-        this.color = color;
     }
 
     /**
@@ -88,13 +86,6 @@ public class Castle {
     }
 
     /**
-     * Sets the game's board
-     */
-    private void setBoard(Board board) {
-        this.board = board;
-    }
-
-    /**
      * @return The training queue
      */
     private Queue<Warrior> getWarriorsQueue() {
@@ -121,7 +112,8 @@ public class Castle {
      * @param name The skill's name
      * @return The skill found
      */
-    public Skill getSkill(String name) {
+    @Nullable
+    public Skill getSkill(@NotNull String name) {
         if (!getSkills().containsKey(name.toLowerCase())) {
             LOGGER.warning("Illegal try to get non-existent skill.");
             return null;
@@ -160,7 +152,7 @@ public class Castle {
     /**
      * Add a warrior to the training queue
      */
-    public void addTraining(WarriorType type) {
+    public void addTraining(@NotNull WarriorType type) {
         int bonusStrength = 0;
         if (this.getSkill("Intensive Training").isActive()) {
             bonusStrength = ((IntensiveTraining) this.getSkill("Intensive Training")).getBoost();

@@ -2,12 +2,13 @@ package me.feelzor.faerunbattle;
 
 import me.feelzor.faerunbattle.model.Castle;
 import me.feelzor.faerunbattle.warriors.*;
+import org.jetbrains.annotations.NotNull;
 
 public class Command {
     /**
      * Show information about a warrior
      */
-    public static void showInformation(String request) {
+    public static void showInformation(@NotNull String request) {
         switch (request.toLowerCase()) {
             case "dwarf": case "d":
                 showWarrior("Dwarf");
@@ -57,7 +58,7 @@ public class Command {
     /**
      * Show information about a skill
      */
-    public static void showSkill(String request, Castle player) {
+    public static void showSkill(@NotNull String request, @NotNull Castle player) {
         switch (request.toLowerCase()) {
             case "bargaining": case "b":
                 printInfo("Bargaining", "Increase resources received each turn by 1.",

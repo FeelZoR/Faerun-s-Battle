@@ -1,6 +1,7 @@
 package me.feelzor.faerunbattle.skills;
 
 import me.feelzor.faerunbattle.model.Castle;
+import org.jetbrains.annotations.NotNull;
 
 public class Bargaining extends Skill {
     @Override
@@ -8,7 +9,7 @@ public class Bargaining extends Skill {
         return 5 * getPlayer().getResourcesOnNewTurn() + (int) Math.pow(getPlayer().getResourcesOnNewTurn() - 1, 1.3);
     }
 
-    public Bargaining(Castle player) {
+    public Bargaining(@NotNull Castle player) {
         super(player);
     }
 

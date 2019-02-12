@@ -2,6 +2,7 @@ package me.feelzor.faerunbattle.model;
 
 import me.feelzor.faerunbattle.Color;
 import me.feelzor.faerunbattle.warriors.Warrior;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,7 +11,7 @@ import java.util.logging.Logger;
 
 public class Board {
     private final static Logger LOGGER = Logger.getLogger(Board.class.getName());
-    private Cell[] cells;
+    private final Cell[] cells;
 
     public Board(int nbCells) {
         if (nbCells != 5 && nbCells != 10 && nbCells != 15) {
@@ -46,6 +47,7 @@ public class Board {
      * @param index The cell index
      * @return The troops placed on a cell
      */
+    @NotNull
     public List<Warrior> getUnitsOnCell(int index) {
         Cell c = getCellAt(index);
         return (c != null) ? c.getUnits() : new ArrayList<>();
@@ -55,6 +57,7 @@ public class Board {
      * @param index The cell index
      * @return The cell's color
      */
+    @NotNull
     public Color getCellColor(int index) {
         Cell c = getCellAt(index);
         return (c != null) ? c.getColor() : Color.NONE;
@@ -71,7 +74,7 @@ public class Board {
      * Add a troop from a castle
      * @param unit The unit to add
      */
-    public void addUnit(Warrior unit) {
+    public void addUnit(@NotNull Warrior unit) {
         if (unit.getColor() == Color.BLUE) {
             Objects.requireNonNull(getCellAt(0)).addUnit(unit);
         } else { // Color rouge

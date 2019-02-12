@@ -1,17 +1,18 @@
 package me.feelzor.faerunbattle.warriors;
 
 import me.feelzor.faerunbattle.Color;
+import org.jetbrains.annotations.NotNull;
 
 public class Dwarf extends Warrior {
     public Dwarf() {
         super();
     }
 
-    public Dwarf(Color col) {
+    public Dwarf(@NotNull Color col) {
         super(col);
     }
 
-    public Dwarf(Color col, int bonusStrength) {
+    public Dwarf(@NotNull Color col, int bonusStrength) {
         super(col, bonusStrength);
     }
 

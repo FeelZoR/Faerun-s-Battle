@@ -3,21 +3,23 @@ package me.feelzor.faerunbattle.skills;
 import me.feelzor.faerunbattle.model.Castle;
 import me.feelzor.faerunbattle.model.Board;
 import me.feelzor.faerunbattle.warriors.Warrior;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
 public class MotivatingCall extends Skill {
 
-    private Board board;
+    private final Board board;
     private boolean available;
 
-    public MotivatingCall(Castle player) {
+    public MotivatingCall(@NotNull Castle player) {
         this(player, null);
     }
 
-    public MotivatingCall(Castle player, Board board) {
+    public MotivatingCall(@NotNull Castle player, @Nullable Board board) {
         super(player);
-        setBoard(board);
+        this.board = board;
         setAvailable(true);
     }
 
@@ -26,16 +28,13 @@ public class MotivatingCall extends Skill {
         return 2;
     }
 
+    @Nullable
     private Board getBoard() {
         return board;
     }
 
     private boolean isAvailable() {
         return available;
-    }
-
-    private void setBoard(Board board) {
-        this.board = board;
     }
 
     private void setAvailable(boolean available) {
@@ -51,6 +50,8 @@ public class MotivatingCall extends Skill {
     public boolean activate() {
         if (!isAvailable()) {
             throw new IllegalStateException("Skill already used this turn.");
+        } else if (getBoard() == null) {
+            throw new IllegalStateException("Skill not initialized with a board.");
         }
         if (!super.activate()) { return false; }
 

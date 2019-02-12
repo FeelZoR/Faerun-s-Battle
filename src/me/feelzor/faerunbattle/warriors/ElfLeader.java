@@ -1,17 +1,18 @@
 package me.feelzor.faerunbattle.warriors;
 
 import me.feelzor.faerunbattle.Color;
+import org.jetbrains.annotations.NotNull;
 
 public class ElfLeader extends Elf {
     public ElfLeader() {
         super();
     }
 
-    public ElfLeader(Color col) {
+    public ElfLeader(@NotNull Color col) {
         super(col);
     }
 
-    public ElfLeader(Color col, int bonusStrength) {
+    public ElfLeader(@NotNull Color col, int bonusStrength) {
         super(col, bonusStrength);
     }
 

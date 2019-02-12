@@ -2,7 +2,7 @@ package me.feelzor.faerunbattle.warriors;
 
 import me.feelzor.faerunbattle.Color;
 import me.feelzor.faerunbattle.DivineBlow;
-import me.feelzor.faerunbattle.model.Castle;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,8 +11,8 @@ import java.util.logging.Logger;
 
 public abstract class Warrior {
     private final static Logger LOGGER = Logger.getLogger(Warrior.class.getName());
-    private int healthPoints;
     private Color col;
+    private int healthPoints;
     private int nbMovements;
     private int maxMovements;
     private int provocation;
@@ -22,7 +22,7 @@ public abstract class Warrior {
         this(Color.NONE);
     }
 
-    public Warrior(Color col) {
+    public Warrior(@NotNull Color col) {
         this.setHealthPoints(100);
         reinitializeMovements();
         setProvocation(1);
@@ -31,7 +31,7 @@ public abstract class Warrior {
         if (col != Color.NONE) { this.setColor(col); }
     }
 
-    public Warrior(Color col, int bonusStrength) {
+    public Warrior(@NotNull Color col, int bonusStrength) {
         this(col);
         if (bonusStrength < 0) {
             LOGGER.warning("Illegal try to set a negative strength bonus.");
@@ -51,6 +51,7 @@ public abstract class Warrior {
     /**
      * @return The warrior's color (RED ou BLUE)
      */
+    @NotNull
     public Color getColor() {
         return col;
     }
@@ -100,7 +101,7 @@ public abstract class Warrior {
      * Change the team of the warrior
      * @param col The new color (either RED or BLUE)
      */
-    public void setColor(Color col) {
+    public void setColor(@NotNull Color col) {
         if (col == Color.NONE) {
             LOGGER.warning("Illegal try to set color NONE");
             return;
@@ -194,7 +195,7 @@ public abstract class Warrior {
      * @param warriors The list of warriors on a cell
      * @return The average level of provocation of allies
      */
-    protected int provocationAverage(List<Warrior> warriors) {
+    protected int provocationAverage(@NotNull List<Warrior> warriors) {
         int nbAllies = 0;
         int totalProvoc = 0;
         for (Warrior w : warriors) {
@@ -216,7 +217,7 @@ public abstract class Warrior {
     /**
      * Attack another warrior
      */
-    public void attack(Warrior warrior) {
+    public void attack(@NotNull Warrior warrior) {
         if (!this.isAlive()) {
             LOGGER.warning("Illegal try to attack another warrior when dead.");
             return;
@@ -238,7 +239,7 @@ public abstract class Warrior {
      * Start a new turn
      * @param warriors The warrior's list
      */
-    public void startTurn(List<Warrior> warriors) {
+    public void startTurn(@NotNull List<Warrior> warriors) {
         Color enemyColor = (this.getColor() == Color.BLUE) ? Color.RED : Color.BLUE;
         Warrior target = firstAlive(warriors, enemyColor);
 
