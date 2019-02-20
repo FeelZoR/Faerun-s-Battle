@@ -1,5 +1,7 @@
 package me.feelzor.faerunbattle.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import me.feelzor.faerunbattle.Color;
 import me.feelzor.faerunbattle.DivineBlow;
 import me.feelzor.faerunbattle.utils.PrintUtils;
@@ -11,6 +13,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.*;
 
 public class Cell {
+
     private final List<Warrior> units;
 
     public Cell() {
@@ -22,6 +25,7 @@ public class Cell {
      * @return RED if all troops are red, BLUE if all troops are blue and NONE if there is no one or both colors on it
      */
     @NotNull
+    @JsonIgnore
     public Color getColor() {
         Color col = Color.NONE;
         int i = 0;
@@ -37,6 +41,7 @@ public class Cell {
      * @return The list of units on the cell
      */
     @NotNull
+    @JsonProperty("troops")
     public List<Warrior> getUnits() {
         return this.units;
     }
@@ -56,6 +61,7 @@ public class Cell {
     /**
      * @return The number of troops on the cell
      */
+    @JsonIgnore
     public int getNbUnits() { return getUnits().size(); }
 
     /**

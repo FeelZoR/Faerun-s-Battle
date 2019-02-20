@@ -9,6 +9,8 @@ public class Bargaining extends Skill {
         return 5 * getPlayer().getResourcesOnNewTurn() + (int) Math.pow(getPlayer().getResourcesOnNewTurn() - 1, 1.3);
     }
 
+    public Bargaining() { super(); }
+
     public Bargaining(@NotNull Castle player) {
         super(player);
     }

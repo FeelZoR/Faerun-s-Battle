@@ -1,5 +1,7 @@
 package me.feelzor.faerunbattle.model;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import me.feelzor.faerunbattle.Color;
 import me.feelzor.faerunbattle.utils.PrintUtils;
 import me.feelzor.faerunbattle.warriors.WarriorType;
@@ -12,10 +14,12 @@ import java.util.HashMap;
 import java.util.Queue;
 
 public class Castle {
+
+    @JsonProperty("skills")
     private final HashMap<String, Skill> skills;
     private final Queue<Warrior> warriorsQueue;
     private final Color color;
-    private final Board board;
+    private Board board;
 
     private int resources;
     private int resourcesOnNewTurn;
@@ -28,14 +32,33 @@ public class Castle {
         this.warriorsQueue = new ArrayDeque<>();
         this.skills = new HashMap<>();
         this.color = col;
-        this.board = board;
-        setResources(3);
-        setResourcesOnNewTurn(1);
 
         addSkill("bargaining", new Bargaining(this));
-        addSkill("motivating call", new MotivatingCall(this, getBoard()));
+        addSkill("motivating call", new MotivatingCall(this));
         addSkill("negotiations", new Negotiations(this));
         addSkill("intensive training", new IntensiveTraining(this));
+
+        setBoard(board);
+        setResources(3);
+        setResourcesOnNewTurn(1);
+    }
+
+    @JsonCreator
+    private Castle (
+            @JsonProperty("color") @NotNull Color col,
+            @JsonProperty("resources") int resources,
+            @JsonProperty("resourcesOnNewTurn") int resourcesOnNewTurn,
+            @JsonProperty("skills") HashMap<String, Skill> skills
+    ) {
+        this.color = col;
+        this.skills = skills;
+        setResources(resources);
+        setResourcesOnNewTurn(resourcesOnNewTurn);
+
+        this.warriorsQueue = new ArrayDeque<>();
+        for (Skill s : skills.values()) {
+            s.setPlayer(this);
+        }
     }
 
     /**
@@ -81,6 +104,11 @@ public class Castle {
      */
     private Board getBoard() {
         return board;
+    }
+
+    void setBoard(Board board) {
+        this.board = board;
+        ((MotivatingCall) getSkill("motivating call")).setBoard(board);
     }
 
     /**
@@ -210,11 +238,13 @@ public class Castle {
     /**
      * Starts a new turn
      */
-    public void debutTour() {
-        this.getTurnResources();
-
+    public void beginTurn() {
         for (Skill skill : getSkills().values()) {
             skill.newTurn();
         }
+    }
+
+    public void endTurn() {
+        this.getTurnResources();
     }
 }

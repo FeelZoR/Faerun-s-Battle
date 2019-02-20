@@ -27,7 +27,7 @@ public class AttackLog extends ActionLog {
 
     @Override
     public String getLog() {
-        return getSource() + " attacked " + getTarget().getColor() + getTarget().getName() + " for " + getRealDamage() +
+        return getSource() + " attacked " + getTarget().getColor() + " " + getTarget().getName() + " for " + getRealDamage() +
                 " damage (" + getBaseDamage() + " base damage). Remaining hp: " + getRemainingHp() + ".";
     }
 }

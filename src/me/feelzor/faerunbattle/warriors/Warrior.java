@@ -1,5 +1,8 @@
 package me.feelzor.faerunbattle.warriors;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import me.feelzor.faerunbattle.Color;
 import me.feelzor.faerunbattle.DivineBlow;
 import me.feelzor.faerunbattle.utils.RandomUtils;
@@ -8,6 +11,8 @@ import me.feelzor.faerunbattle.utils.actions.AttackLog;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,6 +22,8 @@ public abstract class Warrior {
     private int nbMovements;
     private int maxMovements;
     private int provocation;
+
+    @JsonProperty
     private int strength;
 
     public Warrior(@NotNull Color col) {
@@ -59,9 +66,11 @@ public abstract class Warrior {
     public int getProvocation() {
         return provocation;
     }
+
     /**
      * @return The warrior's strength
      */
+    @JsonIgnore
     public int getStrength() {
         return strength;
     }
@@ -83,9 +92,8 @@ public abstract class Warrior {
     /**
      * @return The warriors training cost
      */
-    public int getCost() {
-        return 1;
-    }
+    @JsonIgnore
+    public abstract int getCost();
 
     /**
      * Update the warrior's hp
@@ -96,6 +104,7 @@ public abstract class Warrior {
 
     /**
      * Change the team of the warrior
+     *
      * @param col The new color (either RED or BLUE)
      */
     public void setColor(@NotNull Color col) {
@@ -155,6 +164,7 @@ public abstract class Warrior {
     /**
      * @return true if the warrior is still alive
      */
+    @JsonIgnore
     public boolean isAlive() {
         return this.getHealthPoints() > 0;
     }
@@ -193,7 +203,9 @@ public abstract class Warrior {
         int nbAllies = 0;
         int totalProvoc = 0;
         for (Warrior w : warriors) {
-            if (w.getColor() != this.getColor()) { continue; }
+            if (w.getColor() != this.getColor()) {
+                continue;
+            }
             nbAllies++;
             totalProvoc += w.getProvocation();
         }
@@ -219,7 +231,9 @@ public abstract class Warrior {
 
         int damage = RandomUtils.throwDice(this.getStrength(), 1, 3);
 
-        if (this.getStrength() * 3 * 0.95 <= damage && damage != 0) { throw new DivineBlow(this); }
+        if (this.getStrength() * 3 * 0.95 <= damage && damage != 0) {
+            throw new DivineBlow(this);
+        }
         int healthBeforeBlow = warrior.healthPoints;
         warrior.damage(damage);
         this.increaseProvocation(damage);
@@ -229,6 +243,7 @@ public abstract class Warrior {
 
     /**
      * Start a new turn
+     *
      * @param warriors The warrior's list
      */
     @Nullable
@@ -244,6 +259,7 @@ public abstract class Warrior {
 
     /**
      * Get the first warrior in the list alive and corresponding to the given color
+     *
      * @return The first corresponding warrior or null if there is none
      */
     private Warrior firstAlive(List<Warrior> warriors, Color color) {
@@ -276,19 +292,45 @@ public abstract class Warrior {
      * @return The warrior's name depending on its class
      */
     @NotNull
+    @JsonIgnore
     public String getName() {
-        String name = this.getClass().getSimpleName();
-        StringBuilder builder = new StringBuilder();
-        for (int i = 0; i < name.length(); i++) {
-            if (i != 0 && Character.isUpperCase(name.charAt(i))) { builder.append(' '); }
-            builder.append(name.charAt(i));
-        }
-
-        return builder.toString();
+        return getType().toString();
     }
 
     @Override
     public String toString() {
         return this.getColor().toString() + ' ' + this.getName() + " [" + this.getHealthPoints() + "]";
+    }
+
+    @JsonIgnore
+    protected abstract WarriorType getType();
+
+    @NotNull
+    @JsonProperty("type")
+    private String getClassName() {
+        return this.getClass().getName();
+    }
+
+    @JsonCreator
+    @Nullable
+    public static Warrior create(
+            @JsonProperty("healthPoints") int healthPoints,
+            @JsonProperty("provocation") int provocation,
+            @JsonProperty("strength") int strength,
+            @JsonProperty("color") Color color,
+            @JsonProperty("type") String type
+    ) {
+        try {
+            Class<?> wClass = Class.forName(type);
+            Constructor<?> constructor = wClass.getConstructor(Color.class);
+            Warrior w = (Warrior) constructor.newInstance(color);
+            w.setStrength(strength);
+            w.setProvocation(provocation);
+            w.setHealthPoints(healthPoints);
+            return w;
+        } catch (NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException | ClassNotFoundException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 }

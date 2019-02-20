@@ -39,4 +39,9 @@ public class Paladin extends Warrior {
     protected void damage(int amount) {
         super.damage(amount / 3);
     }
+
+    @Override
+    protected WarriorType getType() {
+        return WarriorType.PALADIN;
+    }
 }

@@ -63,7 +63,7 @@ public class CommandUtils {
                 break;
             case "motivating call": case "mc":
                 PrintUtils.printInfo("Motivating Call", "Motivate troops, giving them the strength to walk two cells this turn.",
-                        String.valueOf(player.getSkill("MotivatingCall").getCost()));
+                        String.valueOf(player.getSkill("Motivating Call").getCost()));
                 break;
             case "negotiations": case "n":
                 PrintUtils.printInfo("Negotiations", "Negotiate training costs and reduce them by 1 for 3 turns (min 1).",
@@ -72,7 +72,7 @@ public class CommandUtils {
             case "intensive training": case "it":
                 PrintUtils.printInfo("Intensive training", "Increase base strength of trained troops by 1 for 2 turns.\n" +
                         "Every additional use of this skill will increase the bonus by 1, for a reduced cost.",
-                        String.valueOf(player.getSkill("IntensiveTraining").getCost()));
+                        String.valueOf(player.getSkill("Intensive Training").getCost()));
                 break;
         }
     }

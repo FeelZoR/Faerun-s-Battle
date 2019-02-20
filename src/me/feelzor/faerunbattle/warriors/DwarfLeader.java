@@ -23,4 +23,9 @@ public class DwarfLeader extends Dwarf {
     public int getCost() {
         return COST;
     }
+
+    @Override
+    protected WarriorType getType() {
+        return WarriorType.DWARF_LEADER;
+    }
 }

@@ -9,6 +9,7 @@ import me.feelzor.faerunbattle.warriors.Warrior;
 import me.feelzor.faerunbattle.warriors.WarriorType;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.File;
 import java.util.List;
 
 public class PrintUtils {
@@ -18,6 +19,7 @@ public class PrintUtils {
     ///////////////////////////////
     public static void logFight(@NotNull List<ActionLog> actions) {
         for (ActionLog action : actions) {
+            if (action == null) continue;
             System.out.println(action.getLog());
         }
     }
@@ -46,14 +48,28 @@ public class PrintUtils {
         System.out.println("You have " + castle.getResources() + " resources.");
     }
 
+    public static void printMainMenuOptions() {
+        System.out.println("----- Main Menu -----");
+        System.out.println("New Game (n), Load Game (l), Delete Save (d), Quit (q)");
+    }
+
     public static void printActionOptions() {
         System.out.println("Action (start with \"info\" to get more information)");
-        System.out.println("Dwarf (d), Elf (e), Dwarf Leader (dl), Elf Leader (el), Paladin (p), Recruiter (r), Healer (h), Skill (s), Empty (0), Quit (q)");
+        System.out.println("Dwarf (d), Elf (e), Dwarf Leader (dl), Elf Leader (el), Paladin (p), Recruiter (r), " +
+                "Healer (h), Skill (s), Empty (0), Next Turn (n), Save (s), Quit (q)");
     }
 
     public static void printSkillOptions() {
         System.out.println("Skill to use (start with \"info\" to get more information)");
         System.out.println("Bargaining (b), Motivating Call (mc), Negotiations (n), Intensive Training (it), Quit (q)");
+    }
+
+    public static void listSaveFiles(List<File> files) {
+        int i = 0;
+        for (File f : files) {
+            i++;
+            System.out.println(i + ". Save file - " + SaveUtils.getDate(f.getName()));
+        }
     }
 
     ///////////////////////////////
@@ -84,6 +100,18 @@ public class PrintUtils {
         System.out.println("----- Information | " + title + " -----");
         System.out.println("Cost: " + cost);
         System.out.println(description);
+    }
+
+    public static void printSaveNotAvailable() {
+        System.out.println("You can only save at the beginning of the turn.");
+    }
+
+    public static void printDeleteSuccess() {
+        System.out.println("Save file deleted!");
+    }
+
+    public static void printDeleteFailed() {
+        System.out.println("Save file deletion failed.");
     }
 
 

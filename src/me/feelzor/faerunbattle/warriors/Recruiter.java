@@ -30,4 +30,9 @@ public class Recruiter extends Warrior {
             return super.attack(warrior);
         }
     }
+
+    @Override
+    protected WarriorType getType() {
+        return WarriorType.RECRUITER;
+    }
 }

@@ -4,28 +4,16 @@ import me.feelzor.faerunbattle.model.Castle;
 import org.jetbrains.annotations.NotNull;
 
 public class Negotiations extends Skill {
-    private int remainingTurns;
+
+    public Negotiations() { super(); }
 
     public Negotiations(@NotNull Castle player) {
         super(player);
-        setRemainingTurns(0);
     }
 
     @Override
     public int getCost() {
         return 4;
-    }
-
-    private int getRemainingTurns() {
-        return remainingTurns;
-    }
-
-    private void setRemainingTurns(int remainingTurns) {
-        this.remainingTurns = remainingTurns;
-    }
-
-    private void decreaseRemainingTurns() {
-        setRemainingTurns(getRemainingTurns() - 1);
     }
 
     @Override

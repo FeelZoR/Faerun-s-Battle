@@ -1,5 +1,8 @@
 package me.feelzor.faerunbattle.model;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import me.feelzor.faerunbattle.Color;
 import me.feelzor.faerunbattle.warriors.Warrior;
 import org.jetbrains.annotations.NotNull;
@@ -19,9 +22,20 @@ public class Board {
         }
     }
 
+    @JsonCreator
+    private Board(@JsonProperty("cells") Cell[] cells) {
+        int nbCells = cells.length;
+        if (nbCells != 5 && nbCells != 10 && nbCells != 15) {
+            throw new IllegalArgumentException("The number of cells can only be 5, 10 or 15.");
+        }
+
+        this.cells = cells;
+    }
+
     /**
      * @return All cells of the board
      */
+    @JsonProperty
     private Cell[] getCells() {
         return cells;
     }
@@ -60,6 +74,7 @@ public class Board {
     /**
      * @return The number of cells in the game
      */
+    @JsonIgnore
     public int getNbCells() {
         return cells.length;
     }

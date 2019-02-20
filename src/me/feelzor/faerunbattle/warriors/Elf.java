@@ -23,4 +23,9 @@ public class Elf extends Warrior {
     public int getCost() {
         return COST;
     }
+
+    @Override
+    protected WarriorType getType() {
+        return WarriorType.ELF;
+    }
 }

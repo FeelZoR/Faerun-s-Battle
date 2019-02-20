@@ -9,6 +9,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 public class Healer extends Warrior {
@@ -66,8 +67,13 @@ public class Healer extends Warrior {
 
         List<Warrior> targets = new ArrayList<>(warriors);
         targets.removeIf(w -> w.getColor() != this.getColor());
-        targets.sort((w1, w2) -> w2.getHealthPoints() - w1.getHealthPoints());
+        targets.sort(Comparator.comparingInt(Warrior::getHealthPoints));
 
         return targets.get(0);
+    }
+
+    @Override
+    protected WarriorType getType() {
+        return WarriorType.HEALER;
     }
 }

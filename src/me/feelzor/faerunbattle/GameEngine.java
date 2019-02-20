@@ -2,39 +2,48 @@ package me.feelzor.faerunbattle;
 
 import me.feelzor.faerunbattle.model.Castle;
 import me.feelzor.faerunbattle.model.Board;
+import me.feelzor.faerunbattle.model.GameState;
 import me.feelzor.faerunbattle.utils.CommandUtils;
+import me.feelzor.faerunbattle.utils.SaveUtils;
 import me.feelzor.faerunbattle.utils.PrintUtils;
-import me.feelzor.faerunbattle.utils.actions.PromptUtils;
+import me.feelzor.faerunbattle.utils.PromptUtils;
 import me.feelzor.faerunbattle.warriors.Warrior;
 import me.feelzor.faerunbattle.warriors.WarriorType;
 
 import java.util.List;
 
 public class GameEngine {
+    private static Castle blue;
+    private static Castle red;
+    private static boolean saveAvailable;
+    private static boolean quitting;
+
     public static void main(String[] args) {
-        Board board = PromptUtils.promptBoardSize();
+        GameState state = PromptUtils.startGame();
+        if (state == null) { return; }
 
-        Castle blue = new Castle(Color.BLUE, board);
-        Castle red = new Castle(Color.RED, board);
+        Board board = state.getBoard();
+        blue = state.getBlue();
+        red = state.getRed();
+        quitting = false;
 
-        while (board.getCellColor(0) != Color.RED
+        while (!quitting && board.getCellColor(0) != Color.RED
                 && board.getCellColor(board.getNbCells() - 1) != Color.BLUE) {
-            newTurn(board, blue, red);
-            gameTurn(blue);
-            gameTurn(red);
-            board.moveUnits();
-            board.startFights();
+            newTurn(board);
+            gameTurn(blue, board);
+            gameTurn(red, board);
+            processTurn(board);
         }
 
-        PrintUtils.printVictoryMessage(board.getCellColor(0) == Color.RED ? Color.RED : Color.BLUE);
+        if (!quitting) {
+            PrintUtils.printVictoryMessage(board.getCellColor(0) == Color.RED ? Color.RED : Color.BLUE);
+        }
     }
 
     /**
      * Start a new turn
-     * @param blue The blue team's castle
-     * @param red The red team's castle
      */
-    private static void newTurn(Board board, Castle blue, Castle red) {
+    private static void newTurn(Board board) {
         PrintUtils.printNewTurn();
         PrintUtils.printBoard(board);
         for (int i = 0; i < board.getNbCells(); i++) {
@@ -44,14 +53,27 @@ public class GameEngine {
             }
         }
 
-        blue.debutTour();
-        red.debutTour();
+        blue.beginTurn();
+        red.beginTurn();
+        saveAvailable = true;
+    }
+
+    /**
+     * Process the turn
+     */
+    private static void processTurn(Board board) {
+        if (quitting) { return; }
+        board.moveUnits();
+        board.startFights();
+        blue.endTurn();
+        red.endTurn();
     }
 
     /**
      * Start a new turn for a castle
      */
-    private static void gameTurn(Castle player) {
+    private static void gameTurn(Castle player, Board board) {
+        if (quitting) { return; }
         PrintUtils.printCastleTurn(player);
 
         String action;
@@ -83,13 +105,24 @@ public class GameEngine {
                 case "skill": case "skills": case "s":
                     skillsMenu(player);
                     break;
+                case "save":
+                    if (saveAvailable) {
+                        SaveUtils.createSave(board, blue, red);
+                    } else {
+                        PrintUtils.printSaveNotAvailable();
+                    }
+                    break;
+                case "quit": case "q":
+                    quitting = true;
+                    break;
                 case "empty": case "0":
                     player.cancelTrainings();
                     break;
             }
 
             if (action.toLowerCase().startsWith("info ")) { CommandUtils.showInformation(action.substring(5)); }
-        } while (!action.equalsIgnoreCase("quit") && !action.equalsIgnoreCase("q"));
+            saveAvailable = false;
+        } while (!action.equalsIgnoreCase("next turn") && !action.equalsIgnoreCase("n") && !quitting);
 
         player.trainUnits();
     }

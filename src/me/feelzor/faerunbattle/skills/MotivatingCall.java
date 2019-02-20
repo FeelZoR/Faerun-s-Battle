@@ -10,8 +10,13 @@ import java.util.List;
 
 public class MotivatingCall extends Skill {
 
-    private final Board board;
+    private Board board;
     private boolean available;
+
+    public MotivatingCall() {
+        super();
+        this.board = null;
+    }
 
     public MotivatingCall(@NotNull Castle player) {
         this(player, null);
@@ -19,7 +24,7 @@ public class MotivatingCall extends Skill {
 
     public MotivatingCall(@NotNull Castle player, @Nullable Board board) {
         super(player);
-        this.board = board;
+        setBoard(board);
         setAvailable(true);
     }
 
@@ -31,6 +36,10 @@ public class MotivatingCall extends Skill {
     @Nullable
     private Board getBoard() {
         return board;
+    }
+
+    public void setBoard(Board board) {
+        this.board = board;
     }
 
     private boolean isAvailable() {
